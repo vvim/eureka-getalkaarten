@@ -1,8 +1,8 @@
-- if defined? @vraag
+- if defined? @vraag.getalX
   .span4
     %p
     %form{:action => "/antwoord", :method => "post"}
-      ="Vraag: #{@vraag.getalX} + #{@vraag.getalY} = "
+      ="Vraag: #{escape_html @vraag.getalX} #{escape_html @vraag.operator} #{escape_html @vraag.getalY} = "
       %input.input-mini{:type => "text", :length => "2", :name => "antwoord"}
       %p
         %button.btn{:type => "submit"} Submit

@@ -3,8 +3,15 @@ require 'haml'
 require 'data_mapper'  
 require "sinatra/reloader" if development?
 
+def willekeurigHondertal()
+  # genereert een willekeurig honderdtal
+  # geeft rand(10) een getal tussen 0 en 9?? dan kan dit dus ook 99 geven??? -> honderdtal : "rand(9) + 1"
+  v = ((((rand(9) + 1) * 10) + rand(10)) * 10) + rand(10)
+  return v
+end
+
 DataMapper::setup(:default, "sqlite3://#{Dir.pwd}/vragen.db")  
-  
+
 class Vraag  
   include DataMapper::Resource  
   property :id, Serial  
@@ -15,6 +22,18 @@ class Vraag
   #property :complete, Boolean, :required => true, :default => false  
   property :created_at, DateTime  
   property :updated_at, DateTime  
+
+  # method aan toevoegen die een nieuwe vraag aanmaakt?
+  def nieuweVraag()
+      v = Vraag.new
+      v.getalX = willekeurigHondertal
+      v.getalY = willekeurigHondertal
+      v.operator = "+"
+      v.created_at = Time.now  
+      v.updated_at = Time.now
+      return v
+  end
+
 end  
 
 
@@ -47,8 +66,8 @@ get '/' do
   else
       # 1. vraag aanmaken:
       @vraag = Vraag.new
-      @vraag.getalX = rand 1000
-      @vraag.getalY = rand 1000
+      @vraag.getalX = willekeurigHondertal
+      @vraag.getalY = willekeurigHondertal
       @vraag.operator = "+"
       @vraag.created_at = Time.now  
       @vraag.updated_at = Time.now  
@@ -79,8 +98,8 @@ get '/nieuwevraag' do
   
   # 1. nieuwe vraag aanmaken om crash te vermijden:
   @vraag = Vraag.new
-  @vraag.getalX = rand 1000
-  @vraag.getalY = rand 1000
+  @vraag.getalX = willekeurigHondertal
+  @vraag.getalY = willekeurigHondertal
   @vraag.operator = "+"
   @vraag.created_at = Time.now  
   @vraag.updated_at = Time.now  
@@ -105,8 +124,8 @@ get '/destroy' do
 
   # 1. vraag aanmaken om crash te vermijden:
   @vraag = Vraag.new
-  @vraag.getalX = rand 1000
-  @vraag.getalY = rand 1000
+  @vraag.getalX = willekeurigHondertal
+  @vraag.getalY = willekeurigHondertal
   @vraag.operator = "+"
   @vraag.created_at = Time.now  
   @vraag.updated_at = Time.now  
@@ -122,3 +141,9 @@ end
 
 
 
+# testpagina, verwijderen!!!!
+get '/profanity' do
+  @vraag = Vraag::nieuweVraag
+  @vraag.save
+  redirect '/'
+end
