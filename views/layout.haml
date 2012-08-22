@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+%html(lang="nl")
+  %head
+    %meta(charset="utf-8")
+    %title= @title
+    /%link(rel="stylesheet" href="/css/bootstrap-responsive.min.css")
+    %link(rel="stylesheet" href="/css/bootstrap.min.css")
+    %link(rel="stylesheet" href="/css/eureka.css")
+    /[if lte IE 6]
+      %link(rel="stylesheet" href="http://universal-ie6-css.googlecode.com/files/ie6.1.1.css" media="screen, projection")
+    /[if lt IE 9]
+      %script(src="//html5shim.googlecode.com/svn/trunk/html5.js")
+  %body
+    = yield

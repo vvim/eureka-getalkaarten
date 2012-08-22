@@ -11,8 +11,13 @@
 .container
   .row
     .span4
-      %form
-        ="<p class=\"vraag\">Vraag: #{@getalX} + #{@getalY} = <input style=\"length: 5\"></p>"
+      %p
+      <b>HTML code in het midden van HAML</b>
+      %form{:action => "/antwoord", :method => "post"}
+        ="Vraag: #{@vraag.getalX} + #{@vraag.getalY} = "
+        %input.input-mini{:type => "text", :length => "2", :name => "antwoord"}
+        %p
+          %button.btn{:type => "submit"} Submit
     .span4
       %h2= "Hulpmiddelen"
     .span4
