@@ -1,15 +1,19 @@
 <% if @vragen %>  
-<h1>vragen tot nu toe:</h1>
-<p style="color: red; font-weight: bold">dit is een testpagina en dient verwijderd te worden!!</p>
-    <% @vragen.each do |vraag| %>  
 
-      <ul>  
-        <li>  
-          Vraag <%= vraag.id %>:  "<%= vraag.getalX %>  <%= vraag.operator %>  <%= vraag.getalY %>", created at <%= vraag.created_at %></li>  
-      </ul>  
-    <% end %>  
+	<h1>vragen tot nu toe:</h1>
+	<p style="color: red; font-weight: bold">dit is een testpagina en dient verwijderd te worden!!</p>
+	    <% @vragen.each do |vraag| %>  
+
+	      <ul>  
+	        <li>  
+	          Vraag <%= vraag.id %>:  "<%= vraag.getalX %>  <%= vraag.operator %>  <%= vraag.getalY %>", created at <%= vraag.created_at %></li>  
+	      </ul>  
+	    <% end %>  
+
 <% else %>  
+
   <h1>Geen vragen gevonden</h1>  
+
 <% end %>  
 
 <a href="/">going home</a>

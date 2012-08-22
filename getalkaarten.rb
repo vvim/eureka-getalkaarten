@@ -75,10 +75,25 @@ get '/antwoord' do
   "No Post today"
 end
 
+get '/nieuwevraag' do
+  
+  # 1. nieuwe vraag aanmaken om crash te vermijden:
+  @vraag = Vraag.new
+  @vraag.getalX = rand 1000
+  @vraag.getalY = rand 1000
+  @vraag.operator = "+"
+  @vraag.created_at = Time.now  
+  @vraag.updated_at = Time.now  
+  # 2. vraag in de databank steken (om te kunnen vergelijken als er een antw is gegeven
+  @vraag.save  
+
+  redirect '/'
+end
 
 
-#################### test
-get '/test' do
+
+#################### toonvragen
+get '/toonvragen' do
   # <p style="color: red; font-weight: bold">dit is een testpagina en dient verwijderd te worden!!</p>
   @vragen = Vraag.all :order => :id.asc
   erb :toonvragen
@@ -100,3 +115,10 @@ get '/destroy' do
 
   erb :toonvragen
 end
+
+
+
+
+
+
+

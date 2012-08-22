@@ -11,4 +11,16 @@
     /[if lt IE 9]
       %script(src="//html5shim.googlecode.com/svn/trunk/html5.js")
   %body
-    = yield
+    .navbar.navbar-fixed-top
+      .navbar-inner
+        .container
+          %ul.nav
+            %li.active
+              %a{:href => "/"} Home
+            %li
+              %a{:href => "#"} Link
+            %li
+              %a{:href => "#"} Link
+    .container
+      .row
+        = yield
