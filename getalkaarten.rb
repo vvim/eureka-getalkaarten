@@ -95,24 +95,41 @@ end
 post '/antwoord' do
   # 1. is er wel een vraag gesteld?
   # 2. is het het juiste antwoord?
-  # 3. is het een denkfou
+  # 3. is het een denkfout
 
+  # 0a. is er wel een antwoord gegeven?
   # een onbestaande parameter is WEL gedefinieerd maar is NIL
   # onbestaande paramets zijn NIET gedefinieerd en hebben dus zelfs geen NIL waarden (testen op joris.nil? geeft crash)
-  antwoord = params[:antwoord]
+  if not defined? params[:antwoord]
+    # geen antwoord gegeven via het formulier
+    # mag in principe niet voorkomen, maar dit zou een programmeerfout kunnen zijn of misbruik
+    redirect '/misbruik/ANTWOORD-parameter-antwoord-is-niet-gedefinieerd'
+  end
+
+  # 0b. antwoord omzetten naar een getal
+  # een parameter is altijd een String, dus we moeten hem eerst omzetten
+  # naar een getal met Integer() vooraleer we er mee kunnen optellen/aftrekken/vermenigvuldigen/delen
+  #antwoord = Integer(params[:antwoord])
+  antwoord = params[:antwoord].to_i
+
+  if not antwoord.is_a? Integer
+    redirect "/misbruik/#{antwoord} is GEEN Integer"
+  end
+
+
 
   @vragen = Vraag.all :order => :id.desc
   if @vragen.first.nil?
     # "vragen.first is NIL en is dus leeg, er is nog geen vraag gesteld"
     # hoe kan dat nu? gebruiker heeft een antwoord gepost maar geen vraag gesteld? lijkt mij straf
     # programmeerfout of misbruik
-    "straf, ge hebt een antwoord gepost, maar er is geen vraag gesteld geweest. En wat nu? redirect / of /nieuwe vraag misschien?"
+    "GEEN INTEGER straf, ge hebt een antwoord gepost, maar er is geen vraag gesteld geweest. En wat nu? redirect / of /nieuwe vraag misschien?"
+    redirect '/misbruik/ANTWOORD-antwoord-gepost-maar-geen-vraag-gevonde-wat-nu-redirect?'
   else
     # er is dus een vraag gesteld en op deze vraag is een antwoord gegeven, de normale gang van zaken
     @vraag = @vragen.first
-    "Het antwoord is: #{escape_html antwoord}, komt dat overeen met #{escape_html @vraag.getalX} #{escape_html @vraag.operator} #{escape_html @vraag.getalY} = #{escape_html(@vraag.getalX + @vraag.getalY)}  ?"
+    "Het antwoord is: #{escape_html antwoord}, komt dat overeen met<br />#{escape_html @vraag.getalX} #{escape_html @vraag.operator} #{escape_html @vraag.getalY} = <b>#{escape_html(@vraag.getalX + @vraag.getalY)}</b>?"
   end
-
 
 end  
 
@@ -155,7 +172,10 @@ get '/destroy' do
   erb :toonvragen
 end
 
-
+# testpagina, verwijderen!!!!
+get '/misbruik/:id' do
+  "#{escape_html params[:id]}"
+end
 
 
 
@@ -163,14 +183,32 @@ end
 
 # testpagina, verwijderen!!!!
 get '/profanity' do
-#lege vragen.db, testen of @vragen.first een NIL geeft!!!! @vragen.first.nil?
-
-  @vragen = Vraag.all :order => :id.desc
-  
-  if @vragen.first.nil?
-    "vragen.first is NIL en is dus leeg, er is nog geen vraag gesteld"
-  else
-    "vragen.first is GEEN en bestaat dus al???"
-  end
-
+# integer testen:
+  erik = "<h1>.to_i() testen</h1>"
+  erik += "15 -> #{15.to_i}<br/>"
+  a = "1,000"
+  erik += "#{a} -> #{a.to_i}<br/>"
+  a = "1.000"
+  erik += "#{a} -> #{a.to_i}<br/>"
+  a = "5+2"
+  erik += "#{a} -> #{a.to_i}<br/>"
+  a = "pi"
+  erik += "#{a} -> #{a.to_i}<br/>"
+  a = "hundred"
+  erik += "#{a} -> #{a.to_i}<br/>"
+  a = "1.15"
+  erik += "#{a} -> #{a.to_i}<br/>"
+  a = "joris"
+  erik += "#{a} -> #{a.to_i}<br/>"
+  a = "2a"
+  erik += "#{a} -> #{a.to_i}<br/>"
+  a = "e313"
+  erik += "#{a} -> #{a.to_i}<br/>"
+  erik
 end
+
+
+# drag and drop:
+####   http://www.brainjar.com/dhtml/drag/
+####   http://www.dhtmlgoodies.com/index.html?page=dragDrop
+####   AWESOME:  http://www.dhtmlgoodies.com/index.html?whichScript=drag-drop-nodes-quiz
