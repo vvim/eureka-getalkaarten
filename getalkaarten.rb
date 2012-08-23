@@ -87,6 +87,10 @@ get '/' do
   @score = 10
   @total = 15
   
+  # filmpje spelen? deze code toevoegen. In .haml kan je nog "&autoplay=1" toevoegen
+  # om het filmpje automatisch te laten starten als de pagina geladen is
+  @youtube = "dFI8vsdhIk8"
+  
   # 4. verstreken tijd bijhouden??? (nog niet opgelost)
   haml :getalkaartenvraag
 end
