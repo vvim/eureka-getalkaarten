@@ -90,7 +90,7 @@ get '/' do
   # filmpje spelen? deze code toevoegen. In .haml kan je nog "&autoplay=1" toevoegen
   # om het filmpje automatisch te laten starten als de pagina geladen is
   @youtube = "dFI8vsdhIk8"
-  
+
   # 4. verstreken tijd bijhouden??? (nog niet opgelost)
   haml :getalkaartenvraag
 end
@@ -186,29 +186,9 @@ end
 
 
 # testpagina, verwijderen!!!!
-get '/profanity' do
-# integer testen:
-  erik = "<h1>.to_i() testen</h1>"
-  erik += "15 -> #{15.to_i}<br/>"
-  a = "1,000"
-  erik += "#{a} -> #{a.to_i}<br/>"
-  a = "1.000"
-  erik += "#{a} -> #{a.to_i}<br/>"
-  a = "5+2"
-  erik += "#{a} -> #{a.to_i}<br/>"
-  a = "pi"
-  erik += "#{a} -> #{a.to_i}<br/>"
-  a = "hundred"
-  erik += "#{a} -> #{a.to_i}<br/>"
-  a = "1.15"
-  erik += "#{a} -> #{a.to_i}<br/>"
-  a = "joris"
-  erik += "#{a} -> #{a.to_i}<br/>"
-  a = "2a"
-  erik += "#{a} -> #{a.to_i}<br/>"
-  a = "e313"
-  erik += "#{a} -> #{a.to_i}<br/>"
-  erik
+get '/dragdrop' do
+#drag - drop test
+  erb :dragdrop
 end
 
 
@@ -216,3 +196,4 @@ end
 ####   http://www.brainjar.com/dhtml/drag/
 ####   http://www.dhtmlgoodies.com/index.html?page=dragDrop
 ####   AWESOME:  http://www.dhtmlgoodies.com/index.html?whichScript=drag-drop-nodes-quiz
+
