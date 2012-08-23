@@ -100,37 +100,25 @@ post '/antwoord' do
   # een onbestaande parameter is WEL gedefinieerd maar is NIL
   # onbestaande paramets zijn NIET gedefinieerd en hebben dus zelfs geen NIL waarden (testen op joris.nil? geeft crash)
   antwoord = params[:antwoord]
-  joris = params[:joris]
-  erik = "Het antwoord is: #{antwoord}<br/>"
-  if antwoord.nil?
-    erik += "Antwoord is dikke NUL<br/>"
+
+  @vragen = Vraag.all :order => :id.desc
+  if @vragen.first.nil?
+    # "vragen.first is NIL en is dus leeg, er is nog geen vraag gesteld"
+    # hoe kan dat nu? gebruiker heeft een antwoord gepost maar geen vraag gesteld? lijkt mij straf
+    # programmeerfout of misbruik
+    "straf, ge hebt een antwoord gepost, maar er is geen vraag gesteld geweest. En wat nu? redirect / of /nieuwe vraag misschien?"
   else
-    erik += "gene nul voor Antwoord<br/>"
+    # er is dus een vraag gesteld en op deze vraag is een antwoord gegeven, de normale gang van zaken
+    @vraag = @vragen.first
+    "Het antwoord is: #{escape_html antwoord}, komt dat overeen met #{escape_html @vraag.getalX} #{escape_html @vraag.operator} #{escape_html @vraag.getalY} = #{escape_html(@vraag.getalX + @vraag.getalY)}  ?"
   end
-  if joris.nil?
-    erik += "Joris is dikke NUL<br/>"
-  else
-    erik += "gene nul voor Joris<br/>"
-  end
-  if defined? jantje
-    erik += "Jantje is gedefinieerd<br/>"
-  else
-    erik += "GEEN definitie voor Jantje<br/>"
-  end
-  if params[:joris].nil?
-    erik += "ParamsJoris is dikke NUL<br/>"
-  else
-    erik += "gene nul voor ParamsJoris<br/>"
-  end
-  if params[:priscilla].nil?
-    erik += "priscilla is nul<br/>"
-  else
-    erik += "priscilla is GEEN snul<br/>"
-  end
-  "#{erik}"
+
+
 end  
 
 get '/antwoord' do
+  # als het geen POST is maar een GET (dus geen formulier ingevuld, maar gewoon gesurft naar /antwoord)
+  # dan best de mensen doorverwijzen naar de hoofdpagina:
   redirect '/'
 end
 
@@ -152,12 +140,14 @@ end
 
 
 #################### toonvragen
+# testpagina, verwijderen!!!!
 get '/toonvragen' do
   # <p style="color: red; font-weight: bold">dit is een testpagina en dient verwijderd te worden!!</p>
   @vragen = Vraag.all :order => :id.asc
   erb :toonvragen
 end
 
+# testpagina, verwijderen!!!!
 get '/destroy' do
   # <p style="color: red; font-weight: bold">dit is een testpagina en dient verwijderd te worden!!</p>
   Vraag.all.destroy
