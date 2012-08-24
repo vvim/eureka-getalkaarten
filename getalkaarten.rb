@@ -91,7 +91,13 @@ get '/' do
   
   # filmpje spelen? deze code toevoegen. In .haml kan je nog "&autoplay=1" toevoegen
   # om het filmpje automatisch te laten starten als de pagina geladen is
-  @youtube = "dFI8vsdhIk8"
+  # -- array van mogelijke filmpjes:
+  hulpfilmpjes = ['dFI8vsdhIk8','A3b9gOtQoq4','E5gNYVia2rg','oHg5SJYRHA0','eM8Ss28zjcE','YR5ApYxkU-U','ceU4ANZKdOM','E9pW6PwEayQ','N5qi5lwuaWo']
+  # -- "hulpfilmpjes.size" geeft de grootte van de array met mogelijke
+  # filmpjes, rand() kiest dan weer een willekeurig getal binnen de grenzen van 0 tot de opgegeven lengte
+  # met deze declaratie krijg je dus een willekeurig filmpje als hulpfilmpje
+  # wil je geen filmpje tonen, dan definieer je gewoon @youtube NIET en de getalkaartenvraag.haml lost het dan op
+  @youtube = hulpfilmpjes[rand(hulpfilmpjes.size)]
 
   # 4. verstreken tijd bijhouden??? (nog niet opgelost)
   haml :getalkaartenvraag
@@ -202,5 +208,5 @@ end
 # testpagina, verwijderen!!!!
 # info on putting Ruby code into HAML: http://haml.info/docs/yardoc/file.HAML_REFERENCE.html#running_ruby_
 get '/count' do
-  haml :count
+  erb :count
 end

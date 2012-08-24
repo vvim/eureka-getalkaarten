@@ -22,11 +22,11 @@
       ="&nbsp;"
   .span4
     %h2= "Overzicht"
-    %p= "Score: #{@score}/#{@total}"
-    %p= "Tijd: #{Time.now}"
+    %p= "Score: #{escape_html @score}/#{escape_html @total}"
+    %p= "Tijd: #{escape_html Time.now}"
     - if defined? @youtube
       -#gebruik "&autoplay=1" om Youtube automatisch te laten starten, see http://brianwong.com/blog/youtube-embed-code-autoplay/ and http://support.google.com/youtube/bin/answer.py?hl=en&answer=1181821
-      %p= "<iframe width=\"420\" height=\"315\" src=\"http://www.youtube.com/embed/#{@youtube}?rel=0\" frameborder=\"0\" allowfullscreen></iframe>"
+      %p= "<iframe width=\"420\" height=\"315\" src=\"http://www.youtube.com/embed/#{escape_html @youtube}?rel=0\" frameborder=\"0\" allowfullscreen></iframe>"
     %p
       %a{:href => "/nieuwevraag"} "Nieuwe vraag aanmaken"
 - else
