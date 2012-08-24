@@ -7,3 +7,31 @@ p.vraag
 {
     margin-top: 40X;
 }
+
+table#getalkaarten
+{
+	padding: 5px;
+	border-collapse: separate;
+	border-spacing: 50px 10px;
+}
+
+table#getalkaarten td
+{
+	padding: 10px;
+	border: solid 1px black;
+}
+
+table#getalkaarten td.getalkaart-honderdtal
+{
+	background-color: yellow;
+}
+
+table#getalkaarten td.getalkaart-tiental
+{
+	background-color: lime;
+}
+
+table#getalkaarten td.getalkaart-eenheid
+{
+	background-color: red;
+}

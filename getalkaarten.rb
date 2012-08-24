@@ -82,6 +82,8 @@ get '/' do
     @vraag = @vragen.first
   end
 
+  #definiëren welk hulpmiddel gebruikt mag worden
+  @hulpmiddel = "getalkaarten"
   
   # 3. score bijhouden:
   @score = 10
@@ -186,14 +188,19 @@ end
 
 
 # testpagina, verwijderen!!!!
+# drag and drop:
+####   http://www.brainjar.com/dhtml/drag/
+####   http://www.dhtmlgoodies.com/index.html?page=dragDrop
+####   AWESOME:  http://www.dhtmlgoodies.com/index.html?whichScript=drag-drop-nodes-quiz
 get '/dragdrop' do
 #drag - drop test
   erb :dragdrop
 end
 
 
-# drag and drop:
-####   http://www.brainjar.com/dhtml/drag/
-####   http://www.dhtmlgoodies.com/index.html?page=dragDrop
-####   AWESOME:  http://www.dhtmlgoodies.com/index.html?whichScript=drag-drop-nodes-quiz
 
+# testpagina, verwijderen!!!!
+# info on putting Ruby code into HAML: http://haml.info/docs/yardoc/file.HAML_REFERENCE.html#running_ruby_
+get '/count' do
+  haml :count
+end
