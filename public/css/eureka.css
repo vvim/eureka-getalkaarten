@@ -8,6 +8,7 @@ p.vraag
     margin-top: 40X;
 }
 
+/*
 table#getalkaarten
 {
 	padding: 5px;
@@ -34,4 +35,96 @@ table#getalkaarten td.getalkaart-tiental
 table#getalkaarten td.getalkaart-eenheid
 {
 	background-color: red;
+}
+*/
+
+/*
+ul#allItems li
+{
+	padding: 10px;
+	border: solid 1px black;
+}
+*/
+
+li#getalkaart100, li#getalkaart200, li#getalkaart300, li#getalkaart400, li#getalkaart500, li#getalkaart600, li#getalkaart700, li#getalkaart800, li#getalkaart900
+{
+	background-color: yellow;
+	text-align: center
+}
+
+li#getalkaart10, li#getalkaart20, li#getalkaart30, li#getalkaart40, li#getalkaart50, li#getalkaart60, li#getalkaart70, li#getalkaart80, li#getalkaart90
+{
+	background-color: lime;
+	text-align: center
+}
+
+li#getalkaart1, li#getalkaart2, li#getalkaart3, li#getalkaart4, li#getalkaart5, li#getalkaart6, li#getalkaart7, li#getalkaart8, li#getalkaart9
+{
+	background-color: red;
+	text-align: center
+}
+
+
+
+#dragContent{	/* Drag container */
+	position:absolute;
+	width:80px; /* was 150px */
+	height:15px;
+	display:none;
+	margin:0px;
+	padding:0px;
+	z-index:2000;
+}
+
+#dragDropIndicator{	/* DIV for the small arrow */
+	position:absolute;
+	width:7px;
+	height:10px;
+	display:none;
+	z-index:1000;
+	margin:0px;
+	padding:0px;
+}
+
+#dhtmlgoodies_dragDropContainer .mouseover{	/* Mouse over effect DIV box in right column */
+	background-color:#E2EBED;
+	border:1px solid #317082;
+}
+
+#dhtmlgoodies_dragDropContainer ul{	/* General rules for all <ul> */
+	margin-top:0px;
+	margin-left:0px;
+	margin-bottom:0px;
+	padding:2px;
+}
+
+#dhtmlgoodies_dragDropContainer li,#dragContent li,li#indicateDestination{	/* Movable items, i.e. <LI> */
+	list-style-type:none;
+	height:15px;
+	/* background-color:#FFFF99; */
+	border:1px solid #000;
+	padding:2px;
+	margin-bottom:2px;
+	cursor:pointer;
+	font-size:13px;
+	line-height:15px;
+}
+
+#dhtmlgoodies_mainContainer div{	/* Small box in right column */
+	width: 200px;
+	height: 200px;
+	border: solid 1px black;
+}
+
+#dhtmlgoodies_mainContainer ul{	/* Small box in right column ,i.e <ul> */
+	width:200px;  /* was 152px, liefst 80 */
+	height:80px;	
+	border:1px;	
+	margin-bottom:0px;
+	overflow:hidden;
+	
+}
+
+div#dhtmlgoodies_listOfItems{
+	width:82px;  /* was 152px */
 }

@@ -210,3 +210,19 @@ end
 get '/count' do
   erb :count
 end
+
+
+
+# testpagina, verwijderen!!!!
+# drag and drop:
+####   http://www.brainjar.com/dhtml/drag/
+####   http://www.dhtmlgoodies.com/index.html?page=dragDrop
+####   AWESOME:  http://www.dhtmlgoodies.com/index.html?whichScript=drag-drop-nodes-quiz
+get '/getalkaarten' do
+  @vragen = Vraag.all :order => :id.desc
+  @vraag = @vragen.first
+  @hulpmiddel = "getalkaarten"
+
+  #drag - drop test
+  haml :testdd
+end
