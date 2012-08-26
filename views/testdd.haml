@@ -13,11 +13,25 @@
     - case @hulpmiddel
     - when "getalkaarten"
       %h2= "Getalkaarten"
-      %table#getalkaarten
-        - (1...10).each do |eenheid|
-          - honderdtal = eenheid *100
-          - tiental = eenheid * 10
-          ="<tr><td id=\"#{honderdtal}\" class=\"getalkaart-honderdtal\">#{honderdtal}</td><td id=\"#{tiental}\" class=\"getalkaart-tiental\">#{tiental}</td><td id=\"#{eenheid}\" class=\"getalkaart-eenheid\">#{eenheid}</td></tr>"
+      #dhtmlgoodies_dragDropContainer
+        #dhtmlgoodies_listOfItems
+          %div
+            %ul#allItems
+              - (1...10).each do |eenheid|
+                - honderdtal = eenheid *100
+                - tiental = eenheid * 10
+                ="<li id=\"getalkaart#{honderdtal}\" class=\"getalkaart-honderdtal\">#{honderdtal}</li>"
+                ="<li id=\"getalkaart#{tiental}\" class=\"getalkaart-tiental\">#{tiental}</li>"
+                ="<li id=\"getalkaart#{eenheid}\" class=\"getalkaart-eenheid\">#{eenheid}</li>"
+        #dhtmlgoodies_mainContainer
+          %div
+            %p
+              %strong Sleep hier de oplossing:
+            %ul#box2
+      %ul#dragContent
+      #dragDropIndicator
+        %img{:src => "images/insert.gif"}
+      #saveContent
     - else
       -# geen hulpmiddel gedefinieerd, maar kan <span4> niet leeglaten of het Overzicht deel gaat naar links opschuiven
       -# dit zou eleganter moetenkunnen :-)

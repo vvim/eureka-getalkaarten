@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    <link href='/css/eureka.css' rel='stylesheet' /> 
+	<script type="text/javascript" src="/js/dragdrop.js"></script>
 	<!--
 		CSS, source: http://www.dhtmlgoodies.com/index.html?whichScript=drag-drop-nodes-quiz
 	-->
@@ -54,16 +54,18 @@
 		border:1px dotted #600;	
 		background-color:#FFF;
 	}
-	
-	#dhtmlgoodies_dragDropContainer ul li.correctAnswer{	/* Correctly moved item */
+
+/*	
+	#dhtmlgoodies_dragDropContainer ul li.correctAnswer{	// Correctly moved item 
 		background-color:green;
 		color:#FFF;
 	}
-	#dhtmlgoodies_dragDropContainer ul li.wrongAnswer{	/* Item moved to wrong box */
+	#dhtmlgoodies_dragDropContainer ul li.wrongAnswer{	// Item moved to wrong box
 		background-color:red;
 		color:#FFF;
 	}
-	
+*/
+
 	
 	/* LEFT COLUMN CSS */
 	div#dhtmlgoodies_listOfItems{	/* Left column "Available students" */
@@ -182,435 +184,76 @@
 	}
 	</style>
 
-	<!--
-
-	Javascript variables:
-		boxSizeArray
-		 = An array indicating max number of items("students") in the small boxes on the right side.
-
-		arrow_offsetX
-		 = Horizontal offset of small arrow - You may have to adjust this value to get the small arrow positioned correctly
-
-		arrow_offsetY
-		 = Vertical offset of small arrow
-
-		arrow_offsetX_firefox and arrow_offsetY_firefox
-		 = Same as above, but for Firefox.
-
-		initShuffleItems
-		 = The left side items will be shuffled when the script loads.
-
-		indicateDestionationByUseOfArrow
-		 = Indicate where objects will be dropped with an arrow. If you set this variable to false, it will use a rectangle instead.
-
-		lockedAfterDrag
-		 = Lock box after it has been dragged. This means that the user will not be able to drag an answer after it has been dropped on an answer
-	
-	Javascript function:
-		everythingIsCorrect:
-		   is executed when all the nodes have been moved to the correct column. You can modify this function as you need.
-	-->
-	<script type="text/javascript">
-	/************************************************************************************************************
-	Copyright (C) December 2005  DTHMLGoodies.com, Alf Magne Kalleland
-
-	This library is free software; you can redistribute it and/or
-	modify it under the terms of the GNU Lesser General Public
-	License as published by the Free Software Foundation; either
-	version 2.1 of the License, or (at your option) any later version.
-
-	This library is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-	Lesser General Public License for more details.
-
-	You should have received a copy of the GNU Lesser General Public
-	License along with this library; if not, write to the Free Software
-	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-
-	Dhtmlgoodies.com., hereby disclaims all copyright interest in this script
-	written by Alf Magne Kalleland.
-
-	Alf Magne Kalleland, 2010
-	Owner of DHTMLgoodies.com
-
-	************************************************************************************************************/
-		
-	/* VARIABLES YOU COULD MODIFY */
-	var boxSizeArray = [3,3,3,3,3,3,3];	// Array indicating how many items there is rooom for in the right column ULs
-	
-	var arrow_offsetX = -5;	// Offset X - position of small arrow
-	var arrow_offsetY = 0;	// Offset Y - position of small arrow
-	
-	var arrow_offsetX_firefox = -6;	// Firefox - offset X small arrow
-	var arrow_offsetY_firefox = -13; // Firefox - offset Y small arrow
-	
-	var verticalSpaceBetweenListItems = 3;	// Pixels space between one <li> and next	
-											// Same value or higher as margin bottom in CSS for #dhtmlgoodies_dragDropContainer ul li,#dragContent li
-	
-											
-	var initShuffleItems = true;	// Shuffle items before staring
-
-	var indicateDestionationByUseOfArrow = true;	// Display arrow to indicate where object will be dropped(false = use rectangle)
-	
-	var lockedAfterDrag = false;	/* Lock items after they have been dragged, i.e. the user get's only one shot for the correct answer */
-	
-	
-	/* END VARIABLES YOU COULD MODIFY */
-	
-	var dragDropTopContainer = false;
-	var dragTimer = -1;
-	var dragContentObj = false;
-	var contentToBeDragged = false;	// Reference to dragged <li>
-	var contentToBeDragged_src = false;	// Reference to parent of <li> before drag started
-	var contentToBeDragged_next = false; 	// Reference to next sibling of <li> to be dragged
-	var destinationObj = false;	// Reference to <UL> or <LI> where element is dropped.
-	var dragDropIndicator = false;	// Reference to small arrow indicating where items will be dropped
-	var ulPositionArray = new Array();
-	var mouseoverObj = false;	// Reference to highlighted DIV
-	
-	var MSIE = navigator.userAgent.indexOf('MSIE')>=0?true:false;
-	var navigatorVersion = navigator.appVersion.replace(/.*?MSIE (\d\.\d).*/g,'$1')/1;
-	var destinationBoxes = new Array();
-	var indicateDestinationBox = false;
-		
-	function getTopPos(inputObj)
-	{		
-	  var returnValue = inputObj.offsetTop;
-	  while((inputObj = inputObj.offsetParent) != null){
-	  	if(inputObj.tagName!='HTML')returnValue += inputObj.offsetTop;
-	  }
-	  return returnValue;
-	}
-	
-	function getLeftPos(inputObj)
-	{
-	  var returnValue = inputObj.offsetLeft;
-	  while((inputObj = inputObj.offsetParent) != null){
-	  	if(inputObj.tagName!='HTML')returnValue += inputObj.offsetLeft;
-	  }
-	  return returnValue;
-	}
-		
-	function cancelEvent()
-	{
-		return false;
-	}
-	function initDrag(e)	// Mouse button is pressed down on a LI
-	{
-		if(document.all)e = event;
-		if(lockedAfterDrag && this.parentNode.id!='getalkaarten')return;
-		
-		var st = Math.max(document.body.scrollTop,document.documentElement.scrollTop);
-		var sl = Math.max(document.body.scrollLeft,document.documentElement.scrollLeft);
-		
-		dragTimer = 0;
-		dragContentObj.style.left = e.clientX + sl + 'px';
-		dragContentObj.style.top = e.clientY + st + 'px';
-		contentToBeDragged = this;
-		contentToBeDragged_src = this.parentNode;
-		contentToBeDragged_next = false;
-		if(this.nextSibling){
-			contentToBeDragged_next = this.nextSibling;
-			if(!this.tagName && contentToBeDragged_next.nextSibling)contentToBeDragged_next = contentToBeDragged_next.nextSibling;
-		}
-		timerDrag();
-		return false;
-	}
-	
-	function everythingIsCorrect()
-	{
-		alert('Congratulations! Everything is correct');		
-	}
-	
-	
-	function timerDrag()
-	{
-		if(dragTimer>=0 && dragTimer<10){
-			dragTimer++;
-			setTimeout('timerDrag()',10);
-			return;
-		}
-		if(dragTimer==10){
-			dragContentObj.style.display='block';
-			dragContentObj.appendChild(contentToBeDragged);
-		}
-	}
-	
-	function moveDragContent(e)
-	{
-		if(dragTimer<10){
-			if(contentToBeDragged){
-				if(contentToBeDragged_next){
-					contentToBeDragged_src.insertBefore(contentToBeDragged,contentToBeDragged_next);
-				}else{
-					contentToBeDragged_src.appendChild(contentToBeDragged);
-				}	
-			}
-			return;
-		}
-		if(document.all)e = event;
-		var st = Math.max(document.body.scrollTop,document.documentElement.scrollTop);
-		var sl = Math.max(document.body.scrollLeft,document.documentElement.scrollLeft);
-		
-		
-		dragContentObj.style.left = e.clientX + sl + 'px';
-		dragContentObj.style.top = e.clientY + st + 'px';
-		
-		if(mouseoverObj)mouseoverObj.className='';
-		destinationObj = false;
-		dragDropIndicator.style.display='none';
-		if(indicateDestinationBox)indicateDestinationBox.style.display='none';
-		var x = e.clientX + sl;
-		var y = e.clientY + st;
-		var width = dragContentObj.offsetWidth;
-		var height = dragContentObj.offsetHeight;
-		
-		var tmpOffsetX = arrow_offsetX;
-		var tmpOffsetY = arrow_offsetY;
-		if(!document.all){
-			tmpOffsetX = arrow_offsetX_firefox;
-			tmpOffsetY = arrow_offsetY_firefox;
-		}
-
-		for(var no=0;no<ulPositionArray.length;no++){
-			var ul_leftPos = ulPositionArray[no]['left'];	
-			var ul_topPos = ulPositionArray[no]['top'];	
-			var ul_height = ulPositionArray[no]['height'];
-			var ul_width = ulPositionArray[no]['width'];
-			
-			if((x+width) > ul_leftPos && x<(ul_leftPos + ul_width) && (y+height)> ul_topPos && y<(ul_topPos + ul_height)){
-				var noExisting = ulPositionArray[no]['obj'].getElementsByTagName('TR').length;
-				if(indicateDestinationBox && indicateDestinationBox.parentNode==ulPositionArray[no]['obj'])noExisting--;
-				if(noExisting<boxSizeArray[no-1] || no==0){
-					dragDropIndicator.style.left = ul_leftPos + tmpOffsetX + 'px';
-					var subLi = ulPositionArray[no]['obj'].getElementsByTagName('TR');
-					for(var liIndex=0;liIndex<subLi.length;liIndex++){
-						var tmpTop = getTopPos(subLi[liIndex]);
-						if(!indicateDestionationByUseOfArrow){
-							if(y<tmpTop){
-								destinationObj = subLi[liIndex];
-								indicateDestinationBox.style.display='block';
-								subLi[liIndex].parentNode.insertBefore(indicateDestinationBox,subLi[liIndex]);
-								break;
-							}
-						}else{							
-							if(y<tmpTop){
-								destinationObj = subLi[liIndex];
-								dragDropIndicator.style.top = tmpTop + tmpOffsetY - Math.round(dragDropIndicator.clientHeight/2) + 'px';
-								dragDropIndicator.style.display='block';
-								break;
-							}	
-						}					
-					}
-					
-					if(!indicateDestionationByUseOfArrow){
-						if(indicateDestinationBox.style.display=='none'){
-							indicateDestinationBox.style.display='block';
-							ulPositionArray[no]['obj'].appendChild(indicateDestinationBox);
-						}
-						
-					}else{
-						if(subLi.length>0 && dragDropIndicator.style.display=='none'){
-							dragDropIndicator.style.top = getTopPos(subLi[subLi.length-1]) + subLi[subLi.length-1].offsetHeight + tmpOffsetY + 'px';
-							dragDropIndicator.style.display='block';
-						}
-						if(subLi.length==0){
-							dragDropIndicator.style.top = ul_topPos + arrow_offsetY + 'px'
-							dragDropIndicator.style.display='block';
-						}
-					}
-					
-					if(!destinationObj)destinationObj = ulPositionArray[no]['obj'];
-					mouseoverObj = ulPositionArray[no]['obj'].parentNode;
-					mouseoverObj.className='mouseover';
-					return;
-				}
-			}
-		}
-	}
-	
-	function checkAnswers()
-	{
-		
-		for(var no=0;no<destinationBoxes.length;no++){
-			var subLis = destinationBoxes[no].getElementsByTagName('TR');
-			if(subLis.length<boxSizeArray[no])return;	
-			
-			for(var no2=0;no2<subLis.length;no2++){
-				if(subLis[no2].className=='wrongAnswer')return;
-			}		
-		}
-		
-		everythingIsCorrect();
-		
-		
-	}
-	
-	
-	/* End dragging 
-	Put <LI> into a destination or back to where it came from.
-	*/	
-	function dragDropEnd(e)
-	{
-		if(dragTimer==-1)return;
-		if(dragTimer<10){
-			dragTimer = -1;
-			return;
-		}
-		dragTimer = -1;
-		if(document.all)e = event;		
-		if(destinationObj){
-			var groupId = contentToBeDragged.getAttribute('groupId');
-			if(!groupId)groupId = contentToBeDragged.groupId;
-			
-			var destinationToCheckOn = destinationObj;
-			if(destinationObj.tagName!='TABLE'){
-				destinationToCheckOn = destinationObj.parentNode;
-			}
-			
-			var answerCheck = false;
-			if(groupId == destinationToCheckOn.id){
-				contentToBeDragged.className = 'correctAnswer';		
-				answerCheck=true;	
-			}else{
-				contentToBeDragged.className = 'wrongAnswer';
-			}
-			if(destinationObj.id=='getalkaarten' || destinationObj.parentNode.id=='getalkaarten')contentToBeDragged.className='';
-			
-			
-			if(destinationObj.tagName=='TABLE'){
-				destinationObj.appendChild(contentToBeDragged);
-			}else{
-				destinationObj.parentNode.insertBefore(contentToBeDragged,destinationObj);
-			}
-			mouseoverObj.className='';
-			destinationObj = false;
-			dragDropIndicator.style.display='none';
-			if(indicateDestinationBox){
-				indicateDestinationBox.style.display='none';
-				document.body.appendChild(indicateDestinationBox);
-			}
-						
-			contentToBeDragged = false;
-			
-			if(answerCheck)checkAnswers();	
-			
-			return;
-		}	
-		if(contentToBeDragged_next){
-			contentToBeDragged_src.insertBefore(contentToBeDragged,contentToBeDragged_next);
-		}else{
-			contentToBeDragged_src.appendChild(contentToBeDragged);
-		}
-		contentToBeDragged = false;
-		dragDropIndicator.style.display='none';
-		if(indicateDestinationBox){
-			indicateDestinationBox.style.display='none';
-			document.body.appendChild(indicateDestinationBox);
-			
-		}		
-		mouseoverObj = false;
-		
-	}
-	
-	/* 
-	Preparing data to be saved 
-	*/
-	function saveDragDropNodes()
-	{
-		var saveString = "";
-		var uls = dragDropTopContainer.getElementsByTagName('TABLE');
-		for(var no=0;no<uls.length;no++){	// LOoping through all <ul>
-			var lis = uls[no].getElementsByTagName('TR');
-			for(var no2=0;no2<lis.length;no2++){
-				if(saveString.length>0)saveString = saveString + ";";
-				saveString = saveString + uls[no].id + '|' + lis[no2].id;
-			}	
-		}		
-		
-		document.getElementById('saveContent').innerHTML = '<h1>Ready to save these nodes:</h1> ' + saveString.replace(/;/g,';<br>') + '<p>Format: ID of ul |(pipe) ID of li;(semicolon)</p><p>You can put these values into a hidden form fields, post it to the server and explode the submitted value there</p>';
-		
-	}
-	
-	function initDragDropScript()
-	{
-		dragContentObj = document.getElementById('dragContent');
-		dragDropIndicator = document.getElementById('dragDropIndicator');
-		dragDropTopContainer = document.getElementById('dhtmlgoodies_dragDropContainer');
-		document.documentElement.onselectstart = cancelEvent;;
-		var listItems = dragDropTopContainer.getElementsByTagName('TR');	// Get array containing all <LI>
-		var itemHeight = false;
-		for(var no=0;no<listItems.length;no++){
-			listItems[no].onmousedown = initDrag;
-			listItems[no].onselectstart = cancelEvent;
-			if(!itemHeight)itemHeight = listItems[no].offsetHeight;
-			if(MSIE && navigatorVersion/1<6){
-				listItems[no].style.cursor='hand';
-			}			
-		}
-		
-		var mainContainer = document.getElementById('dhtmlgoodies_mainContainer');
-		var uls = mainContainer.getElementsByTagName('TABLE');
-		itemHeight = itemHeight + verticalSpaceBetweenListItems;
-		for(var no=0;no<uls.length;no++){
-			uls[no].style.height = itemHeight * boxSizeArray[no]  + 'px';
-			destinationBoxes[destinationBoxes.length] = uls[no];
-		}
-		
-		var leftContainer = document.getElementById('dhtmlgoodies_listOfItems');
-		var itemBox = leftContainer.getElementsByTagName('TABLE')[0];
-		
-		document.documentElement.onmousemove = moveDragContent;	// Mouse move event - moving draggable div
-		document.documentElement.onmouseup = dragDropEnd;	// Mouse move event - moving draggable div
-		
-		var ulArray = dragDropTopContainer.getElementsByTagName('TABLE');
-		for(var no=0;no<ulArray.length;no++){
-			ulPositionArray[no] = new Array();
-			ulPositionArray[no]['left'] = getLeftPos(ulArray[no]);	
-			ulPositionArray[no]['top'] = getTopPos(ulArray[no]);	
-			ulPositionArray[no]['width'] = ulArray[no].offsetWidth;
-			ulPositionArray[no]['height'] = ulArray[no].clientHeight;
-			ulPositionArray[no]['obj'] = ulArray[no];
-		}
-		
-		if(initShuffleItems){
-			var getalkaartenObj = document.getElementById('getalkaarten');
-			var initItems = getalkaartenObj.getElementsByTagName('TR');
-			
-			for(var no=0;no<(initItems.length*10);no++){
-				var itemIndex = Math.floor(Math.random()*initItems.length);
-				getalkaartenObj.appendChild(initItems[itemIndex]);
-			}
-		}
-		if(!indicateDestionationByUseOfArrow){
-			indicateDestinationBox = document.createElement('TR');
-			indicateDestinationBox.id = 'indicateDestination';
-			indicateDestinationBox.style.display='none';
-			document.body.appendChild(indicateDestinationBox);
-		}		
-		
-	}
-	
-	window.onload = initDragDropScript;
-	</script>
 </head>
 <body>
-	<div id="dhtmlgoodies_listOfItems"> 
-        <table id='getalkaarten'> 
-          <tr id='node1' groupId="box2"><td id="100" class="getalkaart-honderdtal">100</td><td id="10" class="getalkaart-tiental">10</td><td id="1" class="getalkaart-eenheid">1</td></tr> 
-          <tr id='node2' groupId="box2"><td id="200" class="getalkaart-honderdtal">200</td><td id="20" class="getalkaart-tiental">20</td><td id="2" class="getalkaart-eenheid">2</td></tr> 
-          <tr id='node3' groupId="box2"><td id="300" class="getalkaart-honderdtal">300</td><td id="30" class="getalkaart-tiental">30</td><td id="3" class="getalkaart-eenheid">3</td></tr> 
-          <tr id='node4' groupId="box2"><td id="400" class="getalkaart-honderdtal">400</td><td id="40" class="getalkaart-tiental">40</td><td id="4" class="getalkaart-eenheid">4</td></tr> 
-          <tr id='node5' groupId="box2"><td id="500" class="getalkaart-honderdtal">500</td><td id="50" class="getalkaart-tiental">50</td><td id="5" class="getalkaart-eenheid">5</td></tr> 
-          <tr id='node6' groupId="box2"><td id="600" class="getalkaart-honderdtal">600</td><td id="60" class="getalkaart-tiental">60</td><td id="6" class="getalkaart-eenheid">6</td></tr> 
-          <tr id='node7' groupId="box2"><td id="700" class="getalkaart-honderdtal">700</td><td id="70" class="getalkaart-tiental">70</td><td id="7" class="getalkaart-eenheid">7</td></tr> 
-          <tr id='node8' groupId="box2"><td id="800" class="getalkaart-honderdtal">800</td><td id="80" class="getalkaart-tiental">80</td><td id="8" class="getalkaart-eenheid">8</td></tr> 
-          <tr id='node9' groupId="box2"><td id="900" class="getalkaart-honderdtal">900</td><td id="90" class="getalkaart-tiental">90</td><td id="9" class="getalkaart-eenheid">9</td></tr> 
-        </table> 
+	<div id="dhtmlgoodies_dragDropContainer">
+
+	<!--
+		Items in the left side box
+
+		The draggable items are <LI> created by the syntax after this comment
+
+		You create one <LI> for each draggable node. Put it inside the <ul id="allItems"> tag. It's important that you set the groupId attribute. The value of this attribute must match the "id" of the box where it belongs. For example: Oslo has groupId = "box2". If you like a the code below, you will see that the <UL> right below Oslo have id="box2". I.e. Oslo belongs to the box Norway.
+	-->
+
+		<div id="dhtmlgoodies_listOfItems">
+			<div>
+				<p>Objects to move</p>		
+			<ul id="allItems">
+				<li id="node100" groupId="box2">100</li>
+				<li id="node10" groupId="box2">10</li>
+				<li id="node1" groupId="box2">1</li>
+			</ul>
+			</div>
+		</div>	
+		<!--
+		The boxes in the right side columns are created by use of plain HTML.
+
+		There is one <DIV> followed by a <UL> for each column box.
+		-->
+		<div id="dhtmlgoodies_mainContainer">
+			<!-- ONE <UL> for each "room" -->
+			<div>
+				<p>Italy</p>
+				<ul id="box1">
+				</ul>
+			</div>
+			<div>		
+				<p>Norway</p>
+				<ul id="box2"></ul>
+			</div>
+			<div>
+				<p>United Kingdom</p>
+				<ul id="box3">
+				</ul>
+			</div>
+			<div>
+				<p>United States</p>
+				<ul id="box4"></ul>
+			</div>
+			<div>	
+				<p>China</p>
+				<ul id="box5">
+				</ul>
+			</div>
+			<div>	
+				<p>Australia</p>
+				<ul id="box6">
+				</ul>
+			</div>
+			<div>	
+				<p>France</p>
+				<ul id="box7">
+				</ul>
+			</div>
+			
+			
+		</div>
+
      </div>
+
      <ul id="dragContent"></ul> 
-	<div id="dragDropIndicator"><img src="images/insert.gif"></div> 
+	<div id="dragDropIndicator"> </div> 
 	<div id="saveContent"></div> 
 </body>
 </html>
