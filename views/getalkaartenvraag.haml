@@ -1,37 +1,61 @@
-%strong{:style => "color: red"} MAAK ER LIJSTEN VAN
-%strong{:style => "color: red"} Jan: Batch van _ naar '&nbsp;'
 - if defined? @vraag.getalX
-  .span4
-    %p
-    %form{:action => "/antwoord", :method => "post"}
-      ="Vraag: #{escape_html @vraag.getalX} #{escape_html @vraag.operator} #{escape_html @vraag.getalY} = "
-      %input.input-mini{:type => "text", :length => "2", :name => "antwoord"}
+  #dhtmlgoodies_dragDropContainer
+    .span4
       %p
-        %button.btn{:type => "submit"} Submit
-  .span4
-    -# eerst testen of een hulpmiddel gebruikt kan worden
-    - case @hulpmiddel
-    - when "getalkaarten"
-      %h2= "Getalkaarten"
-      %table#getalkaarten
-        - (1...10).each do |eenheid|
-          - honderdtal = eenheid *100
-          - tiental = eenheid * 10
-          ="<tr><td id=\"#{honderdtal}\" class=\"getalkaart-honderdtal\">#{honderdtal}</td><td id=\"#{tiental}\" class=\"getalkaart-tiental\">#{tiental}</td><td id=\"#{eenheid}\" class=\"getalkaart-eenheid\">#{eenheid}</td></tr>"
-    - else
-      -# geen hulpmiddel gedefinieerd, maar kan <span4> niet leeglaten of het Overzicht deel gaat naar links opschuiven
-      -# dit zou eleganter moetenkunnen :-)
-      ="&nbsp;"
-  .span4
-    %h2= "Overzicht"
-    %p= "Score: #{escape_html @score}/#{escape_html @total}"
-    %p= "Tijd: #{escape_html Time.now}"
-    - if defined? @youtube
-      -#gebruik "&autoplay=1" om Youtube automatisch te laten starten, see http://brianwong.com/blog/youtube-embed-code-autoplay/ and http://support.google.com/youtube/bin/answer.py?hl=en&answer=1181821
-      %p= "<iframe width=\"420\" height=\"315\" src=\"http://www.youtube.com/embed/#{escape_html @youtube}?rel=0\" frameborder=\"0\" allowfullscreen></iframe>"
-    %p
-      %a{:href => "/nieuwevraag"} "Nieuwe vraag aanmaken"
+      %form{:action => "/antwoord", :method => "post"}
+        ="Vraag: #{escape_html @vraag.getalX} #{escape_html @vraag.operator} #{escape_html @vraag.getalY} = "
+        %input.input-mini{:type => "text", :length => "2", :name => "antwoord"}
+        %p
+          %button.btn{:type => "submit"} Submit
+        -# lijst met versleepbare kaarten:
+        #dhtmlgoodies_listOfItems
+          %div
+            %ul#allItems
+              - (1...10).each do |eenheid|
+                - honderdtal = eenheid *100
+                - tiental = eenheid * 10
+                ="<li id=\"getalkaart#{honderdtal}\" class=\"getalkaart-honderdtal\">#{honderdtal}</li>"
+                ="<li id=\"getalkaart#{tiental}\" class=\"getalkaart-tiental\">#{tiental}</li>"
+                ="<li id=\"getalkaart#{eenheid}\" class=\"getalkaart-eenheid\">#{eenheid}</li>"
+              ="<li id=\"getalkaart16\" class=\"getalkaart-eenheid\">16</li>"
+        -# veldje waar de getalkaarten moeten terechtkomen
+        #dhtmlgoodies_mainContainer
+          %p
+            %strong Sleep hier de oplossing:
+          %div
+            %ul#box2
+    .span4
+      -# eerst testen of een hulpmiddel gebruikt kan worden
+      - case @hulpmiddel
+      - when "getalkaarten"
+        %h2= "Getalkaarten"
+        -# veldje dat het uitzicht bepaald van de kaart /tijdens/ het slepen
+        %ul#dragContent
+        -# bepaald het uitzicht van het pijltje dat aanduidt waar het versleepte kaartje zal worden gedropt als je je muis loslaat (hangt vast met de variabele "indicateDestionationByUseOfArrow" in 'dragdrop.js')
+        #dragDropIndicator
+          %img{:src => "images/insert.gif"}
+        -# geen idee waar dit voor dient :-)
+        #saveContent
+      - else
+        -# geen hulpmiddel gedefinieerd, maar kan <span4> niet leeglaten of het Overzicht deel gaat naar links opschuiven
+        -# dit zou eleganter moetenkunnen :-)
+        ="&nbsp;"
+    .span4
+      %h2= "Overzicht"
+      %p= "Score: #{escape_html @score}/#{escape_html @total}"
+      %p= "Tijd: #{escape_html Time.now}"
+      - if defined? @youtube
+        -#gebruik "&autoplay=1" om Youtube automatisch te laten starten, see http://brianwong.com/blog/youtube-embed-code-autoplay/ and http://support.google.com/youtube/bin/answer.py?hl=en&answer=1181821
+        %p= "<iframe width=\"420\" height=\"315\" src=\"http://www.youtube.com/embed/#{escape_html @youtube}?rel=0\" frameborder=\"0\" allowfullscreen></iframe>"
+      %p
+        %a{:href => "/nieuwevraag"} Nieuwe vraag aanmaken
 - else
   .span12
     %p Jij bent nieuw hier!
     %a{:href => "/nieuwevraag"} Nieuwe vraag aanmaken
+%p{:style => "color: red"} Wim, TODO:
+%ul
+  %li locatie van getalkaarten is bizar
+  %li bij het verslepen van een getalkaart, zou een lege plaats moeten komen in de lijst, niet zomaar laten verdwijnen aub
+  %li bij het terugzetten van een kaart in de algemene lijst: getalkaarten ordenen! (misschien via js-shuffle functie???)
+  %li voor Jan: Batch van _ naar '&nbsp;'

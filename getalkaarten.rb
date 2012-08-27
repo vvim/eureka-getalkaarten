@@ -205,13 +205,6 @@ end
 
 
 
-# testpagina, verwijderen!!!!
-# info on putting Ruby code into HAML: http://haml.info/docs/yardoc/file.HAML_REFERENCE.html#running_ruby_
-get '/count' do
-  erb :count
-end
-
-
 
 # testpagina, verwijderen!!!!
 # drag and drop:

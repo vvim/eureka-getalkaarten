@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>None</title>
+	    <link href='/css/eureka.css' rel='stylesheet' />
+	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<!-- http://www.webdeveloper.com/forum/archive/index.php/t-232520.html -->
+		<script type="text/javascript">
+			var listOrder = "3,1,2";
+			function init()
+			{
+				var nList = document.getElementById("allItems");
+				var nEntry = nList.getElementsByTagName('li');	
+				var nEntryCopy = [];
+				// achteraan de lijst "nEntry" bijvoegen
+				for (i=0; i<nEntry.length; i++)
+				{
+					nEntryCopy[nEntryCopy.length] = nEntry[i].firstChild.data;
+				}
+				//<li>'s in de <ul> leegmaken
+				while (nList.lastChild)
+				{
+					nList.removeChild(nList.lastChild);
+				}
+
+				/*
+				listOrder = listOrder.split(",");
+				//<ul> opvullen met de li's volgens "listOrder"
+				for (i=0; i<nEntryCopy.length; i++)
+				{
+					var nEntry = document.createElement('li');
+					nEntry.appendChild(document.createTextNode(nEntryCopy[listOrder[i]-1]));
+					nList.appendChild(nEntry);
+				}
+				*/
+
+				// <vvim>
+				nEntryCopy.sort()
+				for (i=0; i<nEntryCopy.length; i++)
+				{
+					var nEntry = document.createElement('li');
+					newNode = document.createTextNode(nEntryCopy[i]);
+					nEntry.appendChild(newNode);
+					nList.appendChild(nEntry);
+				}
+
+				for (i=0; i<nList.childNodes.length; i++)
+				{
+					if (nList.childNodes[i].data.length == 1)
+						nList.childNodes[i].setAttribute("class", "getalkaarteenheid");
+				}
+
+/*					if(nEntryCopy[i].length == 1)
+						//nEntry.lastChild.setAttribute("class", "getalkaarttiental");
+						nEntry.appendChild(newNode.setAttribute("class", "getalkaarttiental"))
+*/				// </vvim>	
+
+// lees: http://my.opera.com/GreyWyvern/blog/show.dml/1671288
+			}	
+
+			navigator.appName == "Microsoft Internet Explorer" ? attachEvent('onload', init, false) : addEventListener('load', init, false);	
+		</script>
+		<style type="text/css">
+			body {background-color: #fffacd; margin-top: 60px;}
+		</style>
+	</head>
+<body>
+
+                  <ul id='allItems'> 
+                    <li id="getalkaart100" class="getalkaart-honderdtal">100</li> 
+                    <li id="getalkaart10" class="getalkaart-tiental">10</li> 
+                    <li id="getalkaart1" class="getalkaart-eenheid">1</li> 
+                    <li id="getalkaart200" class="getalkaart-honderdtal">200</li> 
+                    <li id="getalkaart20" class="getalkaart-tiental">20</li> 
+                    <li id="getalkaart2" class="getalkaart-eenheid">2</li> 
+                    <li id="getalkaart300" class="getalkaart-honderdtal">300</li> 
+                    <li id="getalkaart30" class="getalkaart-tiental">30</li> 
+                    <li id="getalkaart3" class="getalkaart-eenheid">3</li> 
+                    <li id="getalkaart400" class="getalkaart-honderdtal">400</li> 
+                    <li id="getalkaart40" class="getalkaart-tiental">40</li> 
+                    <li id="getalkaart4" class="getalkaart-eenheid">4</li> 
+                    <li id="getalkaart500" class="getalkaart-honderdtal">500</li> 
+                    <li id="getalkaart50" class="getalkaart-tiental">50</li> 
+                    <li id="getalkaart5" class="getalkaart-eenheid">5</li> 
+                    <li id="getalkaart600" class="getalkaart-honderdtal">600</li> 
+                    <li id="getalkaart60" class="getalkaart-tiental">60</li> 
+                    <li id="getalkaart6" class="getalkaart-eenheid">6</li> 
+                    <li id="getalkaart700" class="getalkaart-honderdtal">700</li> 
+                    <li id="getalkaart70" class="getalkaart-tiental">70</li> 
+                    <li id="getalkaart7" class="getalkaart-eenheid">7</li> 
+                    <li id="getalkaart800" class="getalkaart-honderdtal">800</li> 
+                    <li id="getalkaart80" class="getalkaart-tiental">80</li> 
+                    <li id="getalkaart8" class="getalkaart-eenheid">8</li> 
+                    <li id="getalkaart900" class="getalkaart-honderdtal">900</li> 
+                    <li id="getalkaart90" class="getalkaart-tiental">90</li> 
+                    <li id="getalkaart9" class="getalkaart-eenheid">9</li> 
+                    <li id="getalkaart16" class="getalkaart-eenheid">16</li> 
+                  </ul> 
+ </body>
+</html>

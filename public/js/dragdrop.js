@@ -64,7 +64,7 @@ var verticalSpaceBetweenListItems = 3;	// Pixels space between one <li> and next
 										// Same value or higher as margin bottom in CSS for #dhtmlgoodies_dragDropContainer ul li,#dragContent li
 
 										
-var initShuffleItems = false;	// Shuffle items before staring
+var initShuffleItems = true;	// Shuffle items before staring
 
 var indicateDestionationByUseOfArrow = true;	// Display arrow to indicate where object will be dropped(false = use rectangle)
 
@@ -390,6 +390,12 @@ function initDragDropScript()
 	}
 	
 	if(initShuffleItems){
+		/* WIM: deze functie gebruiken om de getalkaarten telkens op volgorde te houden??? */
+		/* <vvim>, taken from http://www.roseindia.net/javascript/javascriptexamples/javascript-sort-list.shtml */
+		/* nog beter: http://stackoverflow.com/questions/3630397/how-to-sort-lis-based-on-their-id */
+
+		/* original:
+
 		var allItemsObj = document.getElementById('allItems');
 		var initItems = allItemsObj.getElementsByTagName('LI');
 		
@@ -397,6 +403,29 @@ function initDragDropScript()
 			var itemIndex = Math.floor(Math.random()*initItems.length);
 			allItemsObj.appendChild(initItems[itemIndex]);
 		}
+		
+		*/
+
+		/* <vvim>, taken from http://www.roseindia.net/javascript/javascriptexamples/javascript-sort-list.shtml */
+		var listItem = document.getElementById('allItems').getElementsByTagName('li');
+		var listLength = listItem.length;
+		var list = [];
+		for(var i=0; i<listLength; i++)
+		{
+			list[i] = listItem[i].firstChild;
+			list[i].nodeValue = listItem[i].firstChild.nodeValue;
+			list[i].attributes = listItem[i].firstChild.attributes;
+			list[i].style = listItem[i].firstChild.style;
+		}
+		list.sort();
+		for(var i=0; i<listLength; i++)
+		{
+			listItem[i].firstChild = list[i];
+			listItem[i].firstChild.nodeValue = list[i].nodeValue;
+			listItem[i].firstChild.attributes = list[i].attributes;
+			listItem[i].firstChild.style = list[i].style;
+		}
+		/* </vvim> */
 	}
 	if(!indicateDestionationByUseOfArrow){
 		indicateDestinationBox = document.createElement('LI');

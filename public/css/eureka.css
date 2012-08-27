@@ -3,68 +3,23 @@ body
     padding-top:  40px;
 }
 
-p.vraag
-{
-    margin-top: 40X;
-}
-
-/*
-table#getalkaarten
-{
-	padding: 5px;
-	border-collapse: separate;
-	border-spacing: 50px 10px;
-}
-
-table#getalkaarten td
-{
-	padding: 10px;
-	border: solid 1px black;
-}
-
-table#getalkaarten td.getalkaart-honderdtal
-{
-	background-color: yellow;
-}
-
-table#getalkaarten td.getalkaart-tiental
-{
-	background-color: lime;
-}
-
-table#getalkaarten td.getalkaart-eenheid
-{
-	background-color: red;
-}
-*/
-
-/*
-ul#allItems li
-{
-	padding: 10px;
-	border: solid 1px black;
-}
-*/
-
-li#getalkaart100, li#getalkaart200, li#getalkaart300, li#getalkaart400, li#getalkaart500, li#getalkaart600, li#getalkaart700, li#getalkaart800, li#getalkaart900
+.getalkaarthonderdtal, li#getalkaart100, li#getalkaart200, li#getalkaart300, li#getalkaart400, li#getalkaart500, li#getalkaart600, li#getalkaart700, li#getalkaart800, li#getalkaart900
 {
 	background-color: yellow;
 	text-align: center
 }
 
-li#getalkaart10, li#getalkaart20, li#getalkaart30, li#getalkaart40, li#getalkaart50, li#getalkaart60, li#getalkaart70, li#getalkaart80, li#getalkaart90
+.getalkaarttiental, li#getalkaart10, li#getalkaart20, li#getalkaart30, li#getalkaart40, li#getalkaart50, li#getalkaart60, li#getalkaart70, li#getalkaart80, li#getalkaart90
 {
 	background-color: lime;
 	text-align: center
 }
 
-li#getalkaart1, li#getalkaart2, li#getalkaart3, li#getalkaart4, li#getalkaart5, li#getalkaart6, li#getalkaart7, li#getalkaart8, li#getalkaart9
+.getalkaarteenheid, li#getalkaart1, li#getalkaart2, li#getalkaart3, li#getalkaart4, li#getalkaart5, li#getalkaart6, li#getalkaart7, li#getalkaart8, li#getalkaart9
 {
 	background-color: red;
 	text-align: center
 }
-
-
 
 #dragContent{	/* Drag container */
 	position:absolute;
@@ -111,13 +66,13 @@ li#getalkaart1, li#getalkaart2, li#getalkaart3, li#getalkaart4, li#getalkaart5, 
 }
 
 #dhtmlgoodies_mainContainer div{	/* Small box in right column */
-	width: 200px;
-	height: 200px;
+	width: 80px;
+	height: 80px;
 	border: solid 1px black;
 }
 
 #dhtmlgoodies_mainContainer ul{	/* Small box in right column ,i.e <ul> */
-	width:200px;  /* was 152px, liefst 80 */
+	width:82px;  /* was 152px, liefst 80 */
 	height:80px;	
 	border:1px;	
 	margin-bottom:0px;
