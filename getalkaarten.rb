@@ -217,5 +217,5 @@ get '/getalkaarten' do
   @hulpmiddel = "getalkaarten"
 
   #drag - drop test
-  haml :testdd
+  haml :getalkaartenmiddle
 end
