@@ -1,3 +1,4 @@
 0-bu
 *.db
+public/*.html
 git.push

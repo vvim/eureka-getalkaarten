@@ -112,10 +112,15 @@ post '/antwoord' do
   # 0a. is er wel een antwoord gegeven?
   # een onbestaande parameter is WEL gedefinieerd maar is NIL
   # onbestaande paramets zijn NIET gedefinieerd en hebben dus zelfs geen NIL waarden (testen op joris.nil? geeft crash)
-  if not defined? params[:antwoord]
-    # geen antwoord gegeven via het formulier
+  if not defined? params[:uitkomst]
+    # er is geen 'uitkomst' met de getalkaarten, misschienis er een 'antwoord' gegeven via de tekst-input?
+    # eventueel kunnen we ':uitkomst' en ':antwoord' ook aan elkaar gelijk stellen???
     # mag in principe niet voorkomen, maar dit zou een programmeerfout kunnen zijn of misbruik
-    redirect '/misbruik/ANTWOORD-parameter-antwoord-is-niet-gedefinieerd'
+    if not defined? params[:antwoord]
+      # geen antwoord gegeven via het formulier
+      # mag in principe niet voorkomen, maar dit zou een programmeerfout kunnen zijn of misbruik
+      redirect '/misbruik/ANTWOORD-parameter-antwoord-is-niet-gedefinieerd'
+    end
   end
 
   # 0b. antwoord omzetten naar een getal
@@ -123,11 +128,15 @@ post '/antwoord' do
   # naar een getal met Integer() vooraleer we er mee kunnen optellen/aftrekken/vermenigvuldigen/delen
   #antwoord = Integer(params[:antwoord])
   antwoord = params[:antwoord].to_i
+  uitkomst = params[:uitkomst].to_i
 
   if not antwoord.is_a? Integer
     redirect "/misbruik/#{antwoord} is GEEN Integer"
   end
 
+  if not uitkomst.is_a? Integer
+    redirect "/misbruik/Getalkaartenoplossing #{uitkomst} is GEEN Integer"
+  end
 
 
   @vragen = Vraag.all :order => :id.desc
@@ -140,7 +149,7 @@ post '/antwoord' do
   else
     # er is dus een vraag gesteld en op deze vraag is een antwoord gegeven, de normale gang van zaken
     @vraag = @vragen.first
-    "Het antwoord is: #{escape_html antwoord}, komt dat overeen met<br />#{escape_html @vraag.getalX} #{escape_html @vraag.operator} #{escape_html @vraag.getalY} = <b>#{escape_html(@vraag.getalX + @vraag.getalY)}</b>?"
+    "Het antwoord is: #{escape_html antwoord}, met de getalkaarten is #{escape_html uitkomst} ingegeven. Komt dat overeen met<br />#{escape_html @vraag.getalX} #{escape_html @vraag.operator} #{escape_html @vraag.getalY} = <b>#{escape_html(@vraag.getalX + @vraag.getalY)}</b>?"
   end
 
 end  
@@ -187,35 +196,4 @@ end
 # testpagina, verwijderen!!!!
 get '/misbruik/:id' do
   "#{escape_html params[:id]}"
-end
-
-
-
-
-
-# testpagina, verwijderen!!!!
-# drag and drop:
-####   http://www.brainjar.com/dhtml/drag/
-####   http://www.dhtmlgoodies.com/index.html?page=dragDrop
-####   AWESOME:  http://www.dhtmlgoodies.com/index.html?whichScript=drag-drop-nodes-quiz
-get '/dragdrop' do
-#drag - drop test
-  erb :dragdrop
-end
-
-
-
-
-# testpagina, verwijderen!!!!
-# drag and drop:
-####   http://www.brainjar.com/dhtml/drag/
-####   http://www.dhtmlgoodies.com/index.html?page=dragDrop
-####   AWESOME:  http://www.dhtmlgoodies.com/index.html?whichScript=drag-drop-nodes-quiz
-get '/getalkaarten' do
-  @vragen = Vraag.all :order => :id.desc
-  @vraag = @vragen.first
-  @hulpmiddel = "getalkaarten"
-
-  #drag - drop test
-  haml :getalkaartenmiddle
 end

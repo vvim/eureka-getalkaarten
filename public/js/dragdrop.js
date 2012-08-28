@@ -1,5 +1,7 @@
 /*
 
+Based on: http://www.dhtmlgoodies.com/index.html?whichScript=drag-drop-nodes-quiz
+
 Javascript variables:
 	boxSizeArray
 	 = An array indicating max number of items("students") in the small boxes on the right side.
@@ -13,8 +15,9 @@ Javascript variables:
 	arrow_offsetX_firefox and arrow_offsetY_firefox
 	 = Same as above, but for Firefox.
 
-	initShuffleItems
-	 = The left side items will be shuffled when the script loads.
+	initOrderItems
+	 = Was called "initShuffleItems" in the original script: The left side items will be shuffled when the script loads.
+	   Adapted it so it would put all the 'getalkaarten' in order, renamed
 
 	indicateDestionationByUseOfArrow
 	 = Indicate where objects will be dropped with an arrow. If you set this variable to false, it will use a rectangle instead.
@@ -63,9 +66,6 @@ var arrow_offsetY_firefox = -13; // Firefox - offset Y small arrow
 var verticalSpaceBetweenListItems = 3;	// Pixels space between one <li> and next	
 										// Same value or higher as margin bottom in CSS for #dhtmlgoodies_dragDropContainer ul li,#dragContent li
 
-										
-var initShuffleItems = true;	// Shuffle items before staring
-
 var indicateDestionationByUseOfArrow = true;	// Display arrow to indicate where object will be dropped(false = use rectangle)
 
 var lockedAfterDrag = false;	/* Lock items after they have been dragged, i.e. the user get's only one shot for the correct answer */
@@ -111,6 +111,44 @@ function cancelEvent()
 {
 	return false;
 }
+
+function initOrderItems()
+{
+	/* WIM: deze functie gebruiken om de getalkaarten telkens op volgorde te houden??? */
+	// <vvim>
+			// 1. get the <UL>-element from the BODY
+			var nList = document.getElementById("allItems");
+			// 2. extract all the <LI>-elements from that <UL> and put it in a NodeList
+			var nEntry = nList.getElementsByTagName('li');
+
+			// 3. we can't sort a NodeList, so first make it an Array
+			var nEntryArray = Array.prototype.slice.call(nEntry, 0);
+
+			// 4. sort the array, the normal sort()-function won't do because it is an alphabetical sort
+			// to sort() numeric values, see http://www.w3schools.com/jsref/jsref_sort.asp example, as "Default sort order is alphabetic and ascending. When numbers are sorted alphabetically, "40" comes before "5".  To perform a numeric sort, you must pass a function as an argument when calling the sort method."
+			// the numeric value of the <LI> nodes can be located in nEntryArray[i].firstChild.nodeValue , so compare those
+
+			nEntryArray.sort(function(a,b){
+				return a.firstChild.nodeValue - b.firstChild.nodeValue
+			})
+
+			// 5. empty the nList and refill it with those in the correct order at the nEntryArray
+			while (nList.lastChild)
+			{
+				nList.removeChild(nList.lastChild);
+			}
+
+			for (i=0; i<nEntryArray.length; i++)
+			{
+				nList.appendChild(nEntryArray[i]);
+			}
+
+			// 6. Tadaaaah, shit is tight!
+
+	// </vvim>
+}
+
+
 function initDrag(e)	// Mouse button is pressed down on a LI
 {
 	if(document.all)e = event;
@@ -247,7 +285,6 @@ function moveDragContent(e)
 
 function checkAnswers()
 {
-	
 	for(var no=0;no<destinationBoxes.length;no++){
 		var subLis = destinationBoxes[no].getElementsByTagName('LI');
 		if(subLis.length<boxSizeArray[no])return;	
@@ -309,8 +346,13 @@ function dragDropEnd(e)
 					
 		contentToBeDragged = false;
 		
-		if(answerCheck)checkAnswers();	
-		
+		//if(answerCheck)checkAnswers();
+		saveDragDropNodes();
+
+		//<vvim>
+		initOrderItems();
+		//</vvim>
+
 		return;
 	}	
 	if(contentToBeDragged_next){
@@ -326,7 +368,6 @@ function dragDropEnd(e)
 		
 	}		
 	mouseoverObj = false;
-	
 }
 
 /* 
@@ -334,18 +375,18 @@ Preparing data to be saved
 */
 function saveDragDropNodes()
 {
-	var saveString = "";
-	var uls = dragDropTopContainer.getElementsByTagName('UL');
-	for(var no=0;no<uls.length;no++){	// LOoping through all <ul>
-		var lis = uls[no].getElementsByTagName('LI');
-		for(var no2=0;no2<lis.length;no2++){
-			if(saveString.length>0)saveString = saveString + ";";
-			saveString = saveString + uls[no].id + '|' + lis[no2].id;
-		}	
+	// <vvim> to put information in hidden <input> from <form> so that it can be submitted.
+	// dit zou eleganter moeten kunnen, vooral het optellen met lis[i].firstChild.nodeValue is nogal bizar
+	var saveString = 0;
+	var uls = document.getElementById('kaartendropping');
+	var lis = uls.getElementsByTagName('LI');
+	for(var i=0;i<lis.length;i++){
+		saveString = saveString + Number(lis[i].firstChild.nodeValue);
 	}		
 	
-	document.getElementById('saveContent').innerHTML = '<h1>Ready to save these nodes:</h1> ' + saveString.replace(/;/g,';<br>') + '<p>Format: ID of ul |(pipe) ID of li;(semicolon)</p><p>You can put these values into a hidden form fields, post it to the server and explode the submitted value there</p>';
-	
+	console.log(saveString)
+	document.getElementById('uitkomst').value = saveString;
+	//</vvim>
 }
 
 function initDragDropScript()
@@ -388,45 +429,9 @@ function initDragDropScript()
 		ulPositionArray[no]['height'] = ulArray[no].clientHeight;
 		ulPositionArray[no]['obj'] = ulArray[no];
 	}
-	
-	if(initShuffleItems){
-		/* WIM: deze functie gebruiken om de getalkaarten telkens op volgorde te houden??? */
-		/* <vvim>, taken from http://www.roseindia.net/javascript/javascriptexamples/javascript-sort-list.shtml */
-		/* nog beter: http://stackoverflow.com/questions/3630397/how-to-sort-lis-based-on-their-id */
 
-		/* original:
+	initOrderItems();
 
-		var allItemsObj = document.getElementById('allItems');
-		var initItems = allItemsObj.getElementsByTagName('LI');
-		
-		for(var no=0;no<(initItems.length*10);no++){
-			var itemIndex = Math.floor(Math.random()*initItems.length);
-			allItemsObj.appendChild(initItems[itemIndex]);
-		}
-		
-		*/
-
-		/* <vvim>, taken from http://www.roseindia.net/javascript/javascriptexamples/javascript-sort-list.shtml */
-		var listItem = document.getElementById('allItems').getElementsByTagName('li');
-		var listLength = listItem.length;
-		var list = [];
-		for(var i=0; i<listLength; i++)
-		{
-			list[i] = listItem[i].firstChild;
-			list[i].nodeValue = listItem[i].firstChild.nodeValue;
-			list[i].attributes = listItem[i].firstChild.attributes;
-			list[i].style = listItem[i].firstChild.style;
-		}
-		list.sort();
-		for(var i=0; i<listLength; i++)
-		{
-			listItem[i].firstChild = list[i];
-			listItem[i].firstChild.nodeValue = list[i].nodeValue;
-			listItem[i].firstChild.attributes = list[i].attributes;
-			listItem[i].firstChild.style = list[i].style;
-		}
-		/* </vvim> */
-	}
 	if(!indicateDestionationByUseOfArrow){
 		indicateDestinationBox = document.createElement('LI');
 		indicateDestinationBox.id = 'indicateDestination';
