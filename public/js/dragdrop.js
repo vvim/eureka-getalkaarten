@@ -22,12 +22,6 @@ Javascript variables:
 	indicateDestionationByUseOfArrow
 	 = Indicate where objects will be dropped with an arrow. If you set this variable to false, it will use a rectangle instead.
 
-	lockedAfterDrag
-	 = Lock box after it has been dragged. This means that the user will not be able to drag an answer after it has been dropped on an answer
-
-Javascript function:
-	everythingIsCorrect:
-	   is executed when all the nodes have been moved to the correct column. You can modify this function as you need.
 */
 /************************************************************************************************************
 Copyright (C) December 2005  DTHMLGoodies.com, Alf Magne Kalleland
@@ -67,9 +61,6 @@ var verticalSpaceBetweenListItems = 3;	// Pixels space between one <li> and next
 										// Same value or higher as margin bottom in CSS for #dhtmlgoodies_dragDropContainer ul li,#dragContent li
 
 var indicateDestionationByUseOfArrow = true;	// Display arrow to indicate where object will be dropped(false = use rectangle)
-
-var lockedAfterDrag = false;	/* Lock items after they have been dragged, i.e. the user get's only one shot for the correct answer */
-
 
 /* END VARIABLES YOU COULD MODIFY */
 
@@ -152,7 +143,6 @@ function initOrderItems()
 function initDrag(e)	// Mouse button is pressed down on a LI
 {
 	if(document.all)e = event;
-	if(lockedAfterDrag && this.parentNode.id!='allItems')return;
 	
 	var st = Math.max(document.body.scrollTop,document.documentElement.scrollTop);
 	var sl = Math.max(document.body.scrollLeft,document.documentElement.scrollLeft);
@@ -170,12 +160,6 @@ function initDrag(e)	// Mouse button is pressed down on a LI
 	timerDrag();
 	return false;
 }
-
-function everythingIsCorrect()
-{
-	alert('Congratulations! Everything is correct');		
-}
-
 
 function timerDrag()
 {
@@ -283,23 +267,6 @@ function moveDragContent(e)
 	}
 }
 
-function checkAnswers()
-{
-	for(var no=0;no<destinationBoxes.length;no++){
-		var subLis = destinationBoxes[no].getElementsByTagName('LI');
-		if(subLis.length<boxSizeArray[no])return;	
-		
-		for(var no2=0;no2<subLis.length;no2++){
-			if(subLis[no2].className=='wrongAnswer')return;
-		}		
-	}
-	
-	everythingIsCorrect();
-	
-	
-}
-
-
 /* End dragging 
 Put <LI> into a destination or back to where it came from.
 */	
@@ -313,21 +280,6 @@ function dragDropEnd(e)
 	dragTimer = -1;
 	if(document.all)e = event;		
 	if(destinationObj){
-		var groupId = contentToBeDragged.getAttribute('groupId');
-		if(!groupId)groupId = contentToBeDragged.groupId;
-		
-		var destinationToCheckOn = destinationObj;
-		if(destinationObj.tagName!='UL'){
-			destinationToCheckOn = destinationObj.parentNode;
-		}
-		
-		var answerCheck = false;
-		if(groupId == destinationToCheckOn.id){
-			contentToBeDragged.className = 'correctAnswer';		
-			answerCheck=true;	
-		}else{
-			contentToBeDragged.className = 'wrongAnswer';
-		}
 		if(destinationObj.id=='allItems' || destinationObj.parentNode.id=='allItems')contentToBeDragged.className='';
 		
 		
@@ -346,7 +298,6 @@ function dragDropEnd(e)
 					
 		contentToBeDragged = false;
 		
-		//if(answerCheck)checkAnswers();
 		saveDragDropNodes();
 
 		//<vvim>
